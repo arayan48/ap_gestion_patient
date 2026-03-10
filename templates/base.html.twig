@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Gestion Patient{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+        {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
@@ -13,5 +14,71 @@
     </head>
     <body>
         {% block body %}{% endblock %}
+
+        {# ── Système de modals global (delete / success / custom) ── #}
+        <script>
+        (function () {
+          function openModal(id) {
+            var modal = document.getElementById(id);
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('overflow-hidden');
+            // Focus sur la modal pour accessibilité
+            setTimeout(function () { modal.focus(); }, 50);
+          }
+
+          function closeModal(id) {
+            var modal = document.getElementById(id);
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('overflow-hidden');
+          }
+
+          document.addEventListener('DOMContentLoaded', function () {
+
+            // Ouvrir via data-open-modal="modalId"
+            document.addEventListener('click', function (e) {
+              var opener = e.target.closest('[data-open-modal]');
+              if (opener) {
+                e.preventDefault();
+                openModal(opener.dataset.openModal);
+              }
+            });
+
+            // Fermer via data-close-modal="modalId"
+            document.addEventListener('click', function (e) {
+              var closer = e.target.closest('[data-close-modal]');
+              if (closer) {
+                e.preventDefault();
+                closeModal(closer.dataset.closeModal);
+              }
+            });
+
+            // Fermer en cliquant sur l'overlay (fond sombre)
+            document.addEventListener('click', function (e) {
+              if (e.target.classList.contains('modal-overlay')) {
+                var id = e.target.getAttribute('id');
+                if (id) closeModal(id);
+              }
+            });
+
+            // Fermer avec Escape
+            document.addEventListener('keydown', function (e) {
+              if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(function (m) {
+                  closeModal(m.getAttribute('id'));
+                });
+              }
+            });
+          });
+
+          // Exposer pour usage manuel : Modal.open('monId') / Modal.close('monId')
+          window.Modal = { open: openModal, close: closeModal };
+        }());
+        </script>
+
+        {% block modal_scripts %}{% endblock %}
     </body>
 </html>
