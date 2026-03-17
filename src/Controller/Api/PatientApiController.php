@@ -33,8 +33,19 @@ class PatientApiController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
+        foreach (['nom', 'prenom', 'sexe', 'dateNaissance', 'numeroSecuriteSociale'] as $field) {
+            if (empty($data[$field])) {
+                return $this->json(['message' => "Le champ '$field' est requis."], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
         $patient = new Patient();
-        $this->hydrate($patient, $data);
+
+        try {
+            $this->hydrate($patient, $data);
+        } catch (\Exception) {
+            return $this->json(['message' => 'Format de date invalide (attendu : Y-m-d).'], Response::HTTP_BAD_REQUEST);
+        }
 
         $em->persist($patient);
         $em->flush();
@@ -46,7 +57,13 @@ class PatientApiController extends AbstractController
     public function update(Patient $patient, Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        $this->hydrate($patient, $data);
+
+        try {
+            $this->hydrate($patient, $data);
+        } catch (\Exception) {
+            return $this->json(['message' => 'Format de date invalide (attendu : Y-m-d).'], Response::HTTP_BAD_REQUEST);
+        }
+
         $em->flush();
 
         return $this->json($this->serialize($patient));

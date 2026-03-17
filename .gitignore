@@ -1,6 +1,5 @@
 
 ###> symfony/framework-bundle ###
-
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -23,3 +22,12 @@
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+###> macOS ###
+.DS_Store
+**/.DS_Store
+###< macOS ###
+
+###> Claude Code ###
+.claude/
+###< Claude Code ###

@@ -44,9 +44,13 @@ class AuthController extends AbstractController
         $employe->setTelephone($data['telephone'] ?? null);
         $employe->setStatut($data['statut'] ?? 'actif');
 
-        $dateEmbauche = isset($data['dateEmbauche'])
-            ? new \DateTime($data['dateEmbauche'])
-            : new \DateTime();
+        try {
+            $dateEmbauche = isset($data['dateEmbauche'])
+                ? new \DateTime($data['dateEmbauche'])
+                : new \DateTime();
+        } catch (\Exception) {
+            return $this->json(['message' => 'Format de dateEmbauche invalide (attendu : Y-m-d).'], Response::HTTP_BAD_REQUEST);
+        }
         $employe->setDateEmbauche($dateEmbauche);
 
         $hashed = $passwordHasher->hashPassword($employe, $data['password']);

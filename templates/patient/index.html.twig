@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Patients — Gestion Patient{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+  {% include 'inc/header.html.twig' %}
+
+  <main class="pt-16 flex-1">
+    <div class="max-w-screen-xl mx-auto px-4 py-10">
+
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Patients</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gestion des dossiers patients</p>
+        </div>
+        <button type="button"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Nouveau patient
+        </button>
+      </div>
+
+      {# Placeholder — contenu à venir #}
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-16 flex flex-col items-center justify-center text-center shadow-sm">
+        <div class="w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900 flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-primary-500 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <p class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">Liste des patients</p>
+        <p class="text-sm text-gray-400 dark:text-gray-500">Le contenu de cette section est en cours de développement.</p>
+      </div>
+
+    </div>
+  </main>
+
+  {% include 'inc/footer.html.twig' %}
+</div>
+{% endblock %}

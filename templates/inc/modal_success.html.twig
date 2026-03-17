@@ -99,9 +99,8 @@
 {# Ouverture automatique si auto_open est vrai (ex: après un flash Symfony) #}
 {% if _auto_open %}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  var m = document.getElementById('{{ _modal_id }}');
-  if (m) { m.classList.remove('hidden'); m.setAttribute('aria-hidden', 'false'); }
+document.addEventListener('turbo:load', function () {
+  if (window.Modal) { window.Modal.open('{{ _modal_id }}'); }
 });
 </script>
 {% endif %}

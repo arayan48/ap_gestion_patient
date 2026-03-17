@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 — Erreur serveur</title>
+  <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+  <script>
+    (function () {
+      var t = localStorage.getItem('theme');
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    }());
+  </script>
+</head>
+<body class="bg-white dark:bg-gray-900">
+
+  <section class="w-full">
+    <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+      <div class="mx-auto max-w-screen-sm text-center">
+
+        <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">
+          500
+        </h1>
+        <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">
+          Erreur interne du serveur.
+        </p>
+        <p class="mb-8 text-lg font-light text-gray-500 dark:text-gray-400">
+          Nous travaillons déjà à résoudre le problème. Veuillez réessayer dans quelques instants.
+        </p>
+
+        <a href="/"
+          class="inline-flex items-center gap-2 text-white bg-primary-600 hover:bg-primary-700
+                 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:focus:ring-primary-900
+                 font-medium rounded-lg text-sm px-5 py-2.5 text-center my-4 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          Retour à l'accueil
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

@@ -18,18 +18,19 @@ class ChambreApiController extends AbstractController
         return $this->json(array_map(fn(Chambre $c) => $this->serialize($c), $repo->findAll()));
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(Chambre $chambre): JsonResponse
-    {
-        return $this->json($this->serialize($chambre));
-    }
-
+    // /disponibles AVANT /{id} : sinon Symfony matche /{id} en premier → id="disponibles" → 404
     #[Route('/disponibles', name: 'disponibles', methods: ['GET'])]
     public function disponibles(ChambreRepository $repo): JsonResponse
     {
         $chambres = $repo->findBy(['statut' => 'disponible']);
 
         return $this->json(array_map(fn(Chambre $c) => $this->serialize($c), $chambres));
+    }
+
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    public function show(Chambre $chambre): JsonResponse
+    {
+        return $this->json($this->serialize($chambre));
     }
 
     private function serialize(Chambre $c): array

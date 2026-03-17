@@ -52,10 +52,15 @@ class ReservationApiController extends AbstractController
         $reservation->setPatient($patient);
         $reservation->setLit($lit);
         $reservation->setEmploye($employe);
-        $reservation->setDateDebut(new \DateTime($data['dateDebut']));
-        $reservation->setDateFin(new \DateTime($data['dateFin']));
         $reservation->setStatut($data['statut'] ?? 'en_cours');
         $reservation->setCommentaire($data['commentaire'] ?? null);
+
+        try {
+            $reservation->setDateDebut(new \DateTime($data['dateDebut']));
+            $reservation->setDateFin(new \DateTime($data['dateFin']));
+        } catch (\Exception) {
+            return $this->json(['message' => 'Format de date invalide (attendu : Y-m-d H:i:s).'], Response::HTTP_BAD_REQUEST);
+        }
 
         $em->persist($reservation);
         $em->flush();
@@ -81,8 +86,12 @@ class ReservationApiController extends AbstractController
             $lit = $litRepo->find($data['litId']);
             if ($lit) $reservation->setLit($lit);
         }
-        if (isset($data['dateDebut']))   $reservation->setDateDebut(new \DateTime($data['dateDebut']));
-        if (isset($data['dateFin']))     $reservation->setDateFin(new \DateTime($data['dateFin']));
+        try {
+            if (isset($data['dateDebut'])) $reservation->setDateDebut(new \DateTime($data['dateDebut']));
+            if (isset($data['dateFin']))   $reservation->setDateFin(new \DateTime($data['dateFin']));
+        } catch (\Exception) {
+            return $this->json(['message' => 'Format de date invalide (attendu : Y-m-d H:i:s).'], Response::HTTP_BAD_REQUEST);
+        }
         if (isset($data['statut']))      $reservation->setStatut($data['statut']);
         if (isset($data['commentaire'])) $reservation->setCommentaire($data['commentaire']);
 
