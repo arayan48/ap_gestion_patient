@@ -47,11 +47,14 @@ security:
         - { path: ^/api/login,      roles: PUBLIC_ACCESS }
         - { path: ^/api,            roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/login,          roles: PUBLIC_ACCESS }
+        # Employés, étages, chambres, rôles : admin seulement
+        - { path: ^/employes,       roles: ROLE_ADMINISTRATEUR }
+        - { path: ^/etages,         roles: ROLE_ADMINISTRATEUR }
+        - { path: ^/chambres,       roles: ROLE_ADMINISTRATEUR }
+        - { path: ^/roles,          roles: ROLE_ADMINISTRATEUR }
+        # Patients et réservations : tout employé connecté
         - { path: ^/patients,       roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/chambres,       roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/employes,       roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/reservations,   roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/etages,         roles: IS_AUTHENTICATED_FULLY }
         # / est public (landing/dashboard selon état connexion)
 
 when@test:
