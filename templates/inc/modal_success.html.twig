@@ -98,7 +98,7 @@
 
 {# Ouverture automatique si auto_open est vrai (ex: après un flash Symfony) #}
 {% if _auto_open %}
-<script>
+<script nonce="{{ csp_nonce() }}">
 document.addEventListener('turbo:load', function () {
   if (window.Modal) { window.Modal.open('{{ _modal_id }}'); }
 });

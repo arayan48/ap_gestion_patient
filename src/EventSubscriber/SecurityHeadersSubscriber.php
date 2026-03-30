@@ -2,16 +2,21 @@
 
 namespace App\EventSubscriber;
 
+use App\Service\CspNonce;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class SecurityHeadersSubscriber implements EventSubscriberInterface
 {
+    public function __construct(private readonly CspNonce $cspNonce) {}
+
     public static function getSubscribedEvents(): array
     {
+        // Priorité -256 : s'exécute après ErrorListener::removeCspHeader() (-128)
+        // pour que le CSP soit bien présent même sur les réponses d'erreur
         return [
-            KernelEvents::RESPONSE => 'onKernelResponse',
+            KernelEvents::RESPONSE => ['onKernelResponse', -256],
         ];
     }
 
@@ -24,13 +29,14 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
         $response = $event->getResponse();
         $headers = $response->headers;
 
-        // Content Security Policy
-        // - 'unsafe-inline' requis pour les scripts inline dans header.html.twig
-        // - ui-avatars.com requis pour les avatars employés
+        $nonce = $this->cspNonce->get();
+
+        // CSP avec nonce : supprime 'unsafe-inline' pour script-src et style-src
+        // ui-avatars.com autorisé uniquement en img-src pour les avatars employés
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline'",
-            "style-src 'self' 'unsafe-inline'",
+            "script-src 'self' 'nonce-{$nonce}'",
+            "style-src 'self'",
             "img-src 'self' data: https://ui-avatars.com",
             "font-src 'self'",
             "connect-src 'self'",

@@ -253,7 +253,7 @@
 {% endif %}
 
 {# ── JS drawers ────────────────────────────────────────────────────── #}
-<script>
+<script nonce="{{ csp_nonce() }}">
 document.addEventListener('turbo:load', function () {
   if (!document.getElementById('drawer-add')) return;
 

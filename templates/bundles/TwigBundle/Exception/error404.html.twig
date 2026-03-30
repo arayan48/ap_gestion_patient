@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404 — Page introuvable</title>
   <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
-  <script>
+  <script nonce="{{ csp_nonce() }}">
     (function () {
       var t = localStorage.getItem('theme');
       if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {

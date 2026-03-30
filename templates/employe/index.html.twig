@@ -528,7 +528,7 @@
 {# =====================================================================
    JavaScript
    ===================================================================== #}
-<script>
+<script nonce="{{ csp_nonce() }}">
 document.addEventListener('turbo:load', function () {
 
   var overlay   = document.getElementById('drawer-overlay');

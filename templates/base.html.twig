@@ -6,7 +6,7 @@
         <title>{% block title %}Gestion Patient{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {# Anti-flash dark mode : doit être dans <head> AVANT le CSS pour éviter le flash #}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
             (function () {
                 var t = localStorage.getItem('theme');
                 if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -25,7 +25,7 @@
         {% block body %}{% endblock %}
 
         {# ── Système de modals global (delete / success / custom) ── #}
-        <script>
+        <script nonce="{{ csp_nonce() }}">
         (function () {
           function openModal(id) {
             var modal = document.getElementById(id);
