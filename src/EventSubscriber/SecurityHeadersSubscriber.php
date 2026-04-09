@@ -36,7 +36,7 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
         $csp = implode('; ', [
             "default-src 'self'",
             "script-src 'self' 'nonce-{$nonce}'",
-            "style-src 'self'",
+            "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: https://ui-avatars.com",
             "font-src 'self'",
             "connect-src 'self'",

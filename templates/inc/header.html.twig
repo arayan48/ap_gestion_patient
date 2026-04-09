@@ -140,6 +140,17 @@
           </a>
         </li>
 
+        {# ── Lits — admin ── #}
+        <li>
+          <a href="{{ path('app_lit_index') }}" class="{{ nav.navClass('app_lit_index', currentRoute) }}" aria-current="{{ currentRoute starts with 'app_lit' ? 'page' : 'false' }}">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+            </svg>
+            Lits
+          </a>
+        </li>
+
         {# ── Rôles — admin ── #}
         <li>
           <a href="{{ path('app_role_index') }}" class="{{ nav.navClass('app_role_index', currentRoute) }}" aria-current="{{ currentRoute starts with 'app_role' ? 'page' : 'false' }}">
