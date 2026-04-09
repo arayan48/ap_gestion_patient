@@ -14,7 +14,7 @@
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Chambres</h1>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gestion des chambres et des lits</p>
         </div>
-        <button type="button"
+        <button type="button" id="open-add-drawer"
           class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -23,20 +23,415 @@
         </button>
       </div>
 
-      {# Placeholder — contenu à venir #}
+      {% if chambres is empty %}
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-16 flex flex-col items-center justify-center text-center shadow-sm">
-        <div class="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-900 flex items-center justify-center mb-4">
-          <svg class="w-8 h-8 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+        <div class="w-16 h-16 rounded-2xl bg-teal-100 dark:bg-teal-900 flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-teal-500 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
           </svg>
         </div>
-        <p class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">Liste des chambres</p>
-        <p class="text-sm text-gray-400 dark:text-gray-500">Le contenu de cette section est en cours de développement.</p>
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Aucune chambre</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          {% if etages is empty %}Créez d'abord un étage avant d'ajouter des chambres.
+          {% else %}Commencez par créer une chambre.{% endif %}
+        </p>
+        {% if etages is not empty %}
+        <button type="button" id="open-add-drawer-empty"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Créer une chambre
+        </button>
+        {% else %}
+        <a href="{{ path('app_etage_index') }}"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors">
+          Gérer les étages
+        </a>
+        {% endif %}
       </div>
+      {% else %}
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Chambre</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Statut</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Étage</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Lits</th>
+              <th class="px-5 py-3"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            {% for chambre in chambres %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <td class="px-5 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="font-medium text-gray-900 dark:text-white">Chambre {{ chambre.numeroChambre }}</p>
+                    {% if chambre.description %}<p class="text-xs text-gray-400 dark:text-gray-500 truncate max-w-xs">{{ chambre.description }}</p>{% endif %}
+                  </div>
+                </div>
+              </td>
+              <td class="px-5 py-4 text-gray-600 dark:text-gray-300 capitalize">{{ chambre.typeChambre }}</td>
+              <td class="px-5 py-4">
+                {% if chambre.statut == 'disponible' %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">Disponible</span>
+                {% elseif chambre.statut == 'occupee' %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">Occupée</span>
+                {% else %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">{{ chambre.statut|capitalize }}</span>
+                {% endif %}
+              </td>
+              <td class="px-5 py-4 text-gray-600 dark:text-gray-300 text-xs">
+                {% if chambre.etage %}
+                  <span class="inline-flex items-center gap-1.5">
+                    <span class="w-5 h-5 rounded bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 font-bold flex items-center justify-center text-xs">{{ chambre.etage.numeroEtage }}</span>
+                    {{ chambre.etage.nomEtage ?? ('Étage ' ~ chambre.etage.numeroEtage) }}
+                  </span>
+                {% else %}—{% endif %}
+              </td>
+              <td class="px-5 py-4">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                  {{ chambre.lits|length }} lit{{ chambre.lits|length > 1 ? 's' : '' }}
+                </span>
+              </td>
+              <td class="px-5 py-4 text-right">
+                <button type="button"
+                  class="open-edit-drawer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                  data-id="{{ chambre.id }}"
+                  data-numero="{{ chambre.numeroChambre }}"
+                  data-type="{{ chambre.typeChambre }}"
+                  data-statut="{{ chambre.statut }}"
+                  data-etage="{{ chambre.etage ? chambre.etage.id : '' }}"
+                  data-description="{{ chambre.description ?? '' }}"
+                  data-delete-url="{{ path('app_chambre_delete', {id: chambre.id}) }}">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                  </svg>
+                  Modifier
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
 
     </div>
   </main>
 
   {% include 'inc/footer.html.twig' %}
 </div>
+
+{# ── Overlay ───────────────────────────────────────────────────────── #}
+<div id="drawer-overlay"
+  class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300"></div>
+
+{# ── Drawer — Ajouter une chambre ──────────────────────────────────── #}
+<aside id="drawer-add"
+  class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl z-50
+         transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+
+  <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
+        <svg class="w-4 h-4 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+      </div>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white">Nouvelle chambre</h2>
+    </div>
+    <button type="button" id="close-add-drawer"
+      class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <form method="POST" action="{{ path('app_chambre_new') }}" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-numeroChambre">
+        Numéro de chambre <span class="text-red-500">*</span>
+      </label>
+      <input type="text" id="add-numeroChambre" name="numeroChambre" required placeholder="101"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-typeChambre">
+          Type <span class="text-red-500">*</span>
+        </label>
+        <select id="add-typeChambre" name="typeChambre" required
+          class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+          <option value="simple">Simple</option>
+          <option value="double">Double</option>
+          <option value="suite">Suite</option>
+          <option value="urgence">Urgence</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-statutChambre">
+          Statut <span class="text-red-500">*</span>
+        </label>
+        <select id="add-statutChambre" name="statut" required
+          class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+          <option value="disponible">Disponible</option>
+          <option value="occupee">Occupée</option>
+          <option value="maintenance">Maintenance</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-etageChambre">
+        Étage <span class="text-red-500">*</span>
+      </label>
+      <select id="add-etageChambre" name="etage" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        <option value="">-- Sélectionner un étage --</option>
+        {% for etage in etages %}
+          <option value="{{ etage.id }}">{{ etage.nomEtage ?? ('Étage ' ~ etage.numeroEtage) }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-descriptionChambre">
+        Description
+      </label>
+      <textarea id="add-descriptionChambre" name="description" rows="3"
+        placeholder="Informations complémentaires…"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition resize-none"></textarea>
+    </div>
+
+    <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+      <button type="submit"
+        class="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+        Créer la chambre
+      </button>
+      <button type="button" id="cancel-add-drawer"
+        class="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+        Annuler
+      </button>
+    </div>
+
+  </form>
+</aside>
+
+{# ── Drawer — Modifier une chambre ─────────────────────────────────── #}
+<aside id="drawer-edit"
+  class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl z-50
+         transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+
+  <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
+        <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+      </div>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white">Modifier la chambre</h2>
+    </div>
+    <button type="button" id="close-edit-drawer"
+      class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <form id="form-edit-chambre" method="POST" action="" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-numeroChambre">
+        Numéro de chambre <span class="text-red-500">*</span>
+      </label>
+      <input type="text" id="edit-numeroChambre" name="numeroChambre" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-typeChambre">
+          Type <span class="text-red-500">*</span>
+        </label>
+        <select id="edit-typeChambre" name="typeChambre" required
+          class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+          <option value="simple">Simple</option>
+          <option value="double">Double</option>
+          <option value="suite">Suite</option>
+          <option value="urgence">Urgence</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-statutChambre">
+          Statut <span class="text-red-500">*</span>
+        </label>
+        <select id="edit-statutChambre" name="statut" required
+          class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+          <option value="disponible">Disponible</option>
+          <option value="occupee">Occupée</option>
+          <option value="maintenance">Maintenance</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-etageChambre">
+        Étage <span class="text-red-500">*</span>
+      </label>
+      <select id="edit-etageChambre" name="etage" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        {% for etage in etages %}
+          <option value="{{ etage.id }}">{{ etage.nomEtage ?? ('Étage ' ~ etage.numeroEtage) }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-descriptionChambre">
+        Description
+      </label>
+      <textarea id="edit-descriptionChambre" name="description" rows="3"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition resize-none"></textarea>
+    </div>
+
+    <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+      <button type="submit"
+        class="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+        Enregistrer
+      </button>
+      <button type="button" id="open-delete-modal"
+        class="px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
+        Supprimer
+      </button>
+      <button type="button" id="cancel-edit-drawer"
+        class="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+        Annuler
+      </button>
+    </div>
+
+  </form>
+</aside>
+
+{# ── Modal confirmation suppression ───────────────────────────────── #}
+{% include 'inc/modal_confirm_delete.html.twig' with {
+  modal_id:      'modal-delete-chambre',
+  modal_title:   'Supprimer la chambre',
+  modal_message: 'Cette action est irréversible. Les lits et réservations associés seront également supprimés.',
+  form_id:       'form-delete-chambre',
+  form_action:   '',
+} %}
+
+{# ── Flash modals ──────────────────────────────────────────────────── #}
+{% if app.flashes('success_chambre') is not empty %}
+  {% include 'inc/modal_success.html.twig' with {
+    modal_title:   'Opération réussie',
+    modal_message: app.flashes('success_chambre')|first,
+    auto_open:     true,
+  } %}
+{% endif %}
+{% if app.flashes('success_chambre_edit') is not empty %}
+  {% include 'inc/modal_success.html.twig' with {
+    modal_title:   'Chambre modifiée',
+    modal_message: app.flashes('success_chambre_edit')|first,
+    auto_open:     true,
+  } %}
+{% endif %}
+
+{# ── JS drawers ────────────────────────────────────────────────────── #}
+<script nonce="{{ csp_nonce() }}">
+document.addEventListener('turbo:load', function () {
+  if (!document.getElementById('drawer-add')) return;
+
+  var overlay    = document.getElementById('drawer-overlay');
+  var drawerAdd  = document.getElementById('drawer-add');
+  var drawerEdit = document.getElementById('drawer-edit');
+  var formEdit   = document.getElementById('form-edit-chambre');
+  var formDelete = document.getElementById('form-delete-chambre');
+
+  function openDrawer(drawer) {
+    overlay.classList.remove('hidden');
+    requestAnimationFrame(function () {
+      drawer.classList.remove('-translate-x-full');
+    });
+  }
+
+  function closeAll() {
+    drawerAdd.classList.add('-translate-x-full');
+    drawerEdit.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+  }
+
+  ['open-add-drawer', 'open-add-drawer-empty'].forEach(function (id) {
+    var btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', function () { openDrawer(drawerAdd); });
+  });
+
+  document.getElementById('close-add-drawer').addEventListener('click', closeAll);
+  document.getElementById('cancel-add-drawer').addEventListener('click', closeAll);
+
+  document.querySelectorAll('.open-edit-drawer').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var d = btn.dataset;
+      document.getElementById('edit-numeroChambre').value      = d.numero;
+      document.getElementById('edit-typeChambre').value        = d.type;
+      document.getElementById('edit-statutChambre').value      = d.statut;
+      document.getElementById('edit-etageChambre').value       = d.etage;
+      document.getElementById('edit-descriptionChambre').value = d.description;
+      formEdit.action = '/chambres/' + d.id + '/edit';
+      if (formDelete) formDelete.action = d.deleteUrl;
+      openDrawer(drawerEdit);
+    });
+  });
+
+  document.getElementById('close-edit-drawer').addEventListener('click', closeAll);
+  document.getElementById('cancel-edit-drawer').addEventListener('click', closeAll);
+
+  var openDeleteBtn = document.getElementById('open-delete-modal');
+  if (openDeleteBtn) {
+    openDeleteBtn.addEventListener('click', function () {
+      closeAll();
+      if (window.Modal) window.Modal.open('modal-delete-chambre');
+    });
+  }
+
+  overlay.addEventListener('click', closeAll);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAll();
+  });
+});
+</script>
+
 {% endblock %}

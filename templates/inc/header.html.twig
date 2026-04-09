@@ -206,7 +206,10 @@
         </svg>
       </button>
 
-      {# — Notifications — #}
+      {# — Notifications (données réelles via NotificationService) — #}
+      {% if app.user %}
+      {% set _notifications = app_notifications() %}
+      {% set _unreadCount   = app_notifications_count() %}
       <div class="relative">
         <button id="notif-btn" type="button"
           aria-label="Notifications"
@@ -216,72 +219,92 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
           </svg>
-          {# Badge (nombre non lu — mettre 0 pour masquer) #}
+          {% if _unreadCount > 0 %}
           <span id="notif-badge"
             class="absolute top-1 right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold
                    text-white bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-900">
-            3
+            {{ _unreadCount > 9 ? '9+' : _unreadCount }}
           </span>
+          {% endif %}
         </button>
 
         <div id="notif-dropdown"
              class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg
                     border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
           <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Notifications</h3>
-            <button id="notif-mark-all-read" type="button"
-              class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium focus:outline-none">
-              Tout marquer comme lu
-            </button>
-          </div>
-          <ul class="divide-y divide-gray-100 dark:divide-gray-700 max-h-72 overflow-y-auto">
-            <li class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-              <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mt-0.5">
-                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">Nouveau patient admis</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Chambre 204 · il y a 10 min</p>
-              </div>
-              <span class="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
-            </li>
-            <li class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-              <div class="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mt-0.5">
-                <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">Réservation expirée</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Lit 12B · il y a 1 h</p>
-              </div>
-              <span class="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
-            </li>
-            <li class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-              <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mt-0.5">
-                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">Sortie confirmée</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Patient Martin · il y a 3 h</p>
-              </div>
-              <span class="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
-            </li>
-          </ul>
-          <div class="px-4 py-3 border-t border-gray-100 dark:border-gray-700 text-center">
-            <a href="#" class="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium">
-              Voir toutes les notifications
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+              Notifications
+              {% if _unreadCount > 0 %}
+                <span class="ml-1.5 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
+                  {{ _unreadCount }}
+                </span>
+              {% endif %}
+            </h3>
+            <a href="{{ path('app_reservation_index') }}"
+              class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 font-medium">
+              Voir les réservations
             </a>
           </div>
+
+          {% if _notifications is empty %}
+          <div class="px-4 py-8 text-center">
+            <svg class="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <p class="text-sm text-gray-400 dark:text-gray-500">Aucune notification</p>
+          </div>
+          {% else %}
+          <ul class="divide-y divide-gray-100 dark:divide-gray-700 max-h-80 overflow-y-auto">
+            {% for notif in _notifications %}
+            <li>
+              <a href="{{ notif.url }}"
+                class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+
+                {# Icône selon le type #}
+                {% if notif.type == 'danger' %}
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mt-0.5">
+                  <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                  </svg>
+                </div>
+                {% elseif notif.type == 'warning' %}
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mt-0.5">
+                  <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                {% else %}
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mt-0.5">
+                  <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                  </svg>
+                </div>
+                {% endif %}
+
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">{{ notif.title }}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">{{ notif.detail }}</p>
+                </div>
+
+                {% if notif.unread %}
+                <span class="flex-shrink-0 w-2 h-2 mt-2
+                  {% if notif.type == 'danger' %}bg-red-500
+                  {% elseif notif.type == 'warning' %}bg-yellow-500
+                  {% else %}bg-blue-500{% endif %}
+                  rounded-full"></span>
+                {% endif %}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
         </div>
       </div>
+      {% endif %}
 
       {# — Menu utilisateur — #}
       <div class="relative">
@@ -329,7 +352,7 @@
           {# Actions #}
           <ul class="py-1">
             <li>
-              <a href="#" class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors">
+              <a href="{{ path('app_profil') }}" class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors">
                 <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -337,8 +360,9 @@
                 Mon profil
               </a>
             </li>
+            {% if is_granted('ROLE_ADMINISTRATEUR') %}
             <li>
-              <a href="#" class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors">
+              <a href="{{ path('app_parametres') }}" class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700 transition-colors">
                 <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -347,6 +371,7 @@
                 Paramètres
               </a>
             </li>
+            {% endif %}
           </ul>
 
           {# Déconnexion #}

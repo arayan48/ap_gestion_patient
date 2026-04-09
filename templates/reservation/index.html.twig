@@ -12,9 +12,9 @@
       <div class="flex items-center justify-between mb-8">
         <div>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Réservations</h1>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gestion des réservations de lits</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gestion des séjours et admissions</p>
         </div>
-        <button type="button"
+        <button type="button" id="open-add-drawer"
           class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -23,20 +23,466 @@
         </button>
       </div>
 
-      {# Placeholder — contenu à venir #}
+      {% if reservations is empty %}
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-16 flex flex-col items-center justify-center text-center shadow-sm">
-        <div class="w-16 h-16 rounded-2xl bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mb-4">
-          <svg class="w-8 h-8 text-yellow-500 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
         </div>
-        <p class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">Liste des réservations</p>
-        <p class="text-sm text-gray-400 dark:text-gray-500">Le contenu de cette section est en cours de développement.</p>
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Aucune réservation</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Commencez par créer une réservation.</p>
+        <button type="button" id="open-add-drawer-empty"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Créer une réservation
+        </button>
       </div>
+      {% else %}
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Patient</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Lit / Chambre</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Entrée</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sortie</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Statut</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Responsable</th>
+              <th class="px-5 py-3"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            {% for reservation in reservations %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <td class="px-5 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
+                    <span class="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                      {{ reservation.patient.prenom|first|upper }}{{ reservation.patient.nom|first|upper }}
+                    </span>
+                  </div>
+                  <span class="font-medium text-gray-900 dark:text-white">{{ reservation.patient.nom }} {{ reservation.patient.prenom }}</span>
+                </div>
+              </td>
+              <td class="px-5 py-4 text-gray-600 dark:text-gray-300 text-xs">
+                {% if reservation.lit %}
+                  <span class="font-medium">Lit {{ reservation.lit.numeroLit }}</span>
+                  {% if reservation.lit.chambre %}
+                    <br><span class="text-gray-400">Ch. {{ reservation.lit.chambre.numeroChambre }}</span>
+                  {% endif %}
+                {% else %}—{% endif %}
+              </td>
+              <td class="px-5 py-4 text-gray-600 dark:text-gray-300 text-xs">
+                {{ reservation.dateDebut|date('d/m/Y') }}<br>
+                <span class="text-gray-400">{{ reservation.dateDebut|date('H:i') }}</span>
+              </td>
+              <td class="px-5 py-4 text-gray-600 dark:text-gray-300 text-xs">
+                {{ reservation.dateFin|date('d/m/Y') }}<br>
+                <span class="text-gray-400">{{ reservation.dateFin|date('H:i') }}</span>
+              </td>
+              <td class="px-5 py-4">
+                {% if reservation.statut == 'en_cours' %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">En cours</span>
+                {% elseif reservation.statut == 'terminee' %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">Terminée</span>
+                {% elseif reservation.statut == 'annulee' %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">Annulée</span>
+                {% else %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">{{ reservation.statut|capitalize }}</span>
+                {% endif %}
+              </td>
+              <td class="px-5 py-4 text-gray-500 dark:text-gray-400 text-xs">
+                {{ reservation.employe.prenom }} {{ reservation.employe.nom }}
+              </td>
+              <td class="px-5 py-4 text-right">
+                <button type="button"
+                  class="open-edit-drawer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                  data-id="{{ reservation.id }}"
+                  data-patient="{{ reservation.patient.id }}"
+                  data-lit="{{ reservation.lit ? reservation.lit.id : '' }}"
+                  data-employe="{{ reservation.employe.id }}"
+                  data-date-debut="{{ reservation.dateDebut|date('Y-m-d\\TH:i') }}"
+                  data-date-fin="{{ reservation.dateFin|date('Y-m-d\\TH:i') }}"
+                  data-statut="{{ reservation.statut }}"
+                  data-commentaire="{{ reservation.commentaire ?? '' }}"
+                  data-delete-url="{{ path('app_reservation_delete', {id: reservation.id}) }}">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                  </svg>
+                  Modifier
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
 
     </div>
   </main>
 
   {% include 'inc/footer.html.twig' %}
 </div>
+
+{# ── Overlay ───────────────────────────────────────────────────────── #}
+<div id="drawer-overlay"
+  class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300"></div>
+
+{# ── Drawer — Créer une réservation ────────────────────────────────── #}
+<aside id="drawer-add"
+  class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl z-50
+         transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+
+  <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+        <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+      </div>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white">Nouvelle réservation</h2>
+    </div>
+    <button type="button" id="close-add-drawer"
+      class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <form method="POST" action="{{ path('app_reservation_new') }}" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-patient">
+        Patient <span class="text-red-500">*</span>
+      </label>
+      <select id="add-patient" name="patient" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        <option value="">-- Sélectionner un patient --</option>
+        {% for patient in patients %}
+          <option value="{{ patient.id }}">{{ patient.nom }} {{ patient.prenom }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-lit">
+        Lit <span class="text-red-500">*</span>
+      </label>
+      <select id="add-lit" name="lit" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        <option value="">-- Sélectionner un lit --</option>
+        {% for lit in lits %}
+          <option value="{{ lit.id }}">
+            Lit {{ lit.numeroLit }}{% if lit.chambre %} — Ch. {{ lit.chambre.numeroChambre }}{% if lit.chambre.etage %} ({{ lit.chambre.etage.nomEtage ?? 'Étage ' ~ lit.chambre.etage.numeroEtage }}){% endif %}{% endif %}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-dateDebut">
+          Entrée <span class="text-red-500">*</span>
+        </label>
+        <input type="datetime-local" id="add-dateDebut" name="dateDebut" required
+          class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-dateFin">
+          Sortie prévue <span class="text-red-500">*</span>
+        </label>
+        <input type="datetime-local" id="add-dateFin" name="dateFin" required
+          class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-statut-resa">
+        Statut <span class="text-red-500">*</span>
+      </label>
+      <select id="add-statut-resa" name="statut" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        <option value="en_cours">En cours</option>
+        <option value="terminee">Terminée</option>
+        <option value="annulee">Annulée</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-employe-resa">
+        Responsable <span class="text-red-500">*</span>
+      </label>
+      <select id="add-employe-resa" name="employe" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        <option value="">-- Sélectionner un employé --</option>
+        {% for employe in employes %}
+          <option value="{{ employe.id }}">{{ employe.nom }} {{ employe.prenom }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-commentaire">
+        Commentaire
+      </label>
+      <textarea id="add-commentaire" name="commentaire" rows="3"
+        placeholder="Notes médicales, informations complémentaires…"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition resize-none"></textarea>
+    </div>
+
+    <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+      <button type="submit"
+        class="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+        Créer la réservation
+      </button>
+      <button type="button" id="cancel-add-drawer"
+        class="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+        Annuler
+      </button>
+    </div>
+
+  </form>
+</aside>
+
+{# ── Drawer — Modifier une réservation ─────────────────────────────── #}
+<aside id="drawer-edit"
+  class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl z-50
+         transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+
+  <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
+        <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+      </div>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white">Modifier la réservation</h2>
+    </div>
+    <button type="button" id="close-edit-drawer"
+      class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <form id="form-edit-reservation" method="POST" action="" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-patient">
+        Patient <span class="text-red-500">*</span>
+      </label>
+      <select id="edit-patient" name="patient" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        {% for patient in patients %}
+          <option value="{{ patient.id }}">{{ patient.nom }} {{ patient.prenom }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-lit">
+        Lit <span class="text-red-500">*</span>
+      </label>
+      <select id="edit-lit" name="lit" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        {% for lit in lits %}
+          <option value="{{ lit.id }}">
+            Lit {{ lit.numeroLit }}{% if lit.chambre %} — Ch. {{ lit.chambre.numeroChambre }}{% if lit.chambre.etage %} ({{ lit.chambre.etage.nomEtage ?? 'Étage ' ~ lit.chambre.etage.numeroEtage }}){% endif %}{% endif %}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-dateDebut">
+          Entrée <span class="text-red-500">*</span>
+        </label>
+        <input type="datetime-local" id="edit-dateDebut" name="dateDebut" required
+          class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-dateFin">
+          Sortie prévue <span class="text-red-500">*</span>
+        </label>
+        <input type="datetime-local" id="edit-dateFin" name="dateFin" required
+          class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-statut-resa">
+        Statut <span class="text-red-500">*</span>
+      </label>
+      <select id="edit-statut-resa" name="statut" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        <option value="en_cours">En cours</option>
+        <option value="terminee">Terminée</option>
+        <option value="annulee">Annulée</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-employe-resa">
+        Responsable <span class="text-red-500">*</span>
+      </label>
+      <select id="edit-employe-resa" name="employe" required
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition">
+        {% for employe in employes %}
+          <option value="{{ employe.id }}">{{ employe.nom }} {{ employe.prenom }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-commentaire">
+        Commentaire
+      </label>
+      <textarea id="edit-commentaire" name="commentaire" rows="3"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition resize-none"></textarea>
+    </div>
+
+    <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+      <button type="submit"
+        class="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+        Enregistrer
+      </button>
+      <button type="button" id="open-delete-modal"
+        class="px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
+        Supprimer
+      </button>
+      <button type="button" id="cancel-edit-drawer"
+        class="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+        Annuler
+      </button>
+    </div>
+
+  </form>
+</aside>
+
+{# ── Modal confirmation suppression ───────────────────────────────── #}
+{% include 'inc/modal_confirm_delete.html.twig' with {
+  modal_id:      'modal-delete-reservation',
+  modal_title:   'Supprimer la réservation',
+  modal_message: 'Cette action est irréversible. La réservation sera définitivement supprimée.',
+  form_id:       'form-delete-reservation',
+  form_action:   '',
+} %}
+
+{# ── Flash modals ──────────────────────────────────────────────────── #}
+{% if app.flashes('success_reservation') is not empty %}
+  {% include 'inc/modal_success.html.twig' with {
+    modal_title:   'Opération réussie',
+    modal_message: app.flashes('success_reservation')|first,
+    auto_open:     true,
+  } %}
+{% endif %}
+{% if app.flashes('success_reservation_edit') is not empty %}
+  {% include 'inc/modal_success.html.twig' with {
+    modal_title:   'Réservation modifiée',
+    modal_message: app.flashes('success_reservation_edit')|first,
+    auto_open:     true,
+  } %}
+{% endif %}
+
+{# ── JS drawers ────────────────────────────────────────────────────── #}
+<script nonce="{{ csp_nonce() }}">
+document.addEventListener('turbo:load', function () {
+  if (!document.getElementById('drawer-add')) return;
+
+  var overlay    = document.getElementById('drawer-overlay');
+  var drawerAdd  = document.getElementById('drawer-add');
+  var drawerEdit = document.getElementById('drawer-edit');
+  var formEdit   = document.getElementById('form-edit-reservation');
+  var formDelete = document.getElementById('form-delete-reservation');
+
+  function openDrawer(drawer) {
+    overlay.classList.remove('hidden');
+    requestAnimationFrame(function () {
+      drawer.classList.remove('-translate-x-full');
+    });
+  }
+
+  function closeAll() {
+    drawerAdd.classList.add('-translate-x-full');
+    drawerEdit.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+  }
+
+  ['open-add-drawer', 'open-add-drawer-empty'].forEach(function (id) {
+    var btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', function () { openDrawer(drawerAdd); });
+  });
+
+  document.getElementById('close-add-drawer').addEventListener('click', closeAll);
+  document.getElementById('cancel-add-drawer').addEventListener('click', closeAll);
+
+  document.querySelectorAll('.open-edit-drawer').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var d = btn.dataset;
+      document.getElementById('edit-patient').value       = d.patient;
+      document.getElementById('edit-lit').value           = d.lit;
+      document.getElementById('edit-dateDebut').value     = d.dateDebut;
+      document.getElementById('edit-dateFin').value       = d.dateFin;
+      document.getElementById('edit-statut-resa').value   = d.statut;
+      document.getElementById('edit-employe-resa').value  = d.employe;
+      document.getElementById('edit-commentaire').value   = d.commentaire;
+      formEdit.action = '/reservations/' + d.id + '/edit';
+      if (formDelete) formDelete.action = d.deleteUrl;
+      openDrawer(drawerEdit);
+    });
+  });
+
+  document.getElementById('close-edit-drawer').addEventListener('click', closeAll);
+  document.getElementById('cancel-edit-drawer').addEventListener('click', closeAll);
+
+  var openDeleteBtn = document.getElementById('open-delete-modal');
+  if (openDeleteBtn) {
+    openDeleteBtn.addEventListener('click', function () {
+      closeAll();
+      if (window.Modal) window.Modal.open('modal-delete-reservation');
+    });
+  }
+
+  overlay.addEventListener('click', closeAll);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAll();
+  });
+});
+</script>
+
 {% endblock %}

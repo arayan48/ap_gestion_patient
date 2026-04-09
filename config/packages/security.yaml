@@ -52,9 +52,13 @@ security:
         - { path: ^/etages,         roles: ROLE_ADMINISTRATEUR }
         - { path: ^/chambres,       roles: ROLE_ADMINISTRATEUR }
         - { path: ^/roles,          roles: ROLE_ADMINISTRATEUR }
+        # Paramètres : admin seulement
+        - { path: ^/parametres,     roles: ROLE_ADMINISTRATEUR }
         # Patients et réservations : tout employé connecté
         - { path: ^/patients,       roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/reservations,   roles: IS_AUTHENTICATED_FULLY }
+        # Profil : tout employé connecté
+        - { path: ^/profil,         roles: IS_AUTHENTICATED_FULLY }
         # / est public (landing/dashboard selon état connexion)
 
 when@test:

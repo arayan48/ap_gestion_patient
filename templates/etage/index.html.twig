@@ -14,7 +14,7 @@
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Étages</h1>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gestion des étages et des chambres</p>
         </div>
-        <button type="button"
+        <button type="button" id="open-add-drawer"
           class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -23,20 +23,318 @@
         </button>
       </div>
 
-      {# Placeholder — contenu à venir #}
+      {% if etages is empty %}
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-16 flex flex-col items-center justify-center text-center shadow-sm">
         <div class="w-16 h-16 rounded-2xl bg-orange-100 dark:bg-orange-900 flex items-center justify-center mb-4">
           <svg class="w-8 h-8 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
           </svg>
         </div>
-        <p class="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">Liste des étages</p>
-        <p class="text-sm text-gray-400 dark:text-gray-500">Le contenu de cette section est en cours de développement.</p>
+        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Aucun étage</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Commencez par créer un étage.</p>
+        <button type="button" id="open-add-drawer-empty"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Créer un étage
+        </button>
       </div>
+      {% else %}
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">N°</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nom</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Chambres</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Créé le</th>
+              <th class="px-5 py-3"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            {% for etage in etages %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <td class="px-5 py-4">
+                <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
+                  <span class="text-sm font-bold text-orange-600 dark:text-orange-400">{{ etage.numeroEtage }}</span>
+                </div>
+              </td>
+              <td class="px-5 py-4 font-medium text-gray-900 dark:text-white">
+                {{ etage.nomEtage ?? ('Étage ' ~ etage.numeroEtage) }}
+              </td>
+              <td class="px-5 py-4 text-gray-500 dark:text-gray-400 max-w-xs truncate">
+                {{ etage.description ?? '—' }}
+              </td>
+              <td class="px-5 py-4">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                  </svg>
+                  {{ etage.chambres|length }}
+                </span>
+              </td>
+              <td class="px-5 py-4 text-gray-500 dark:text-gray-400 text-xs">
+                {{ etage.dateCreation|date('d/m/Y') }}
+              </td>
+              <td class="px-5 py-4 text-right">
+                <button type="button"
+                  class="open-edit-drawer inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                  data-id="{{ etage.id }}"
+                  data-numero="{{ etage.numeroEtage }}"
+                  data-nom="{{ etage.nomEtage ?? '' }}"
+                  data-description="{{ etage.description ?? '' }}"
+                  data-delete-url="{{ path('app_etage_delete', {id: etage.id}) }}">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                  </svg>
+                  Modifier
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
 
     </div>
   </main>
 
   {% include 'inc/footer.html.twig' %}
 </div>
+
+{# ── Overlay ───────────────────────────────────────────────────────── #}
+<div id="drawer-overlay"
+  class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300"></div>
+
+{# ── Drawer — Ajouter un étage ─────────────────────────────────────── #}
+<aside id="drawer-add"
+  class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl z-50
+         transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+
+  <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
+        <svg class="w-4 h-4 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+      </div>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white">Nouvel étage</h2>
+    </div>
+    <button type="button" id="close-add-drawer"
+      class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <form method="POST" action="{{ path('app_etage_new') }}" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-numeroEtage">
+        Numéro d'étage <span class="text-red-500">*</span>
+      </label>
+      <input type="number" id="add-numeroEtage" name="numeroEtage" required min="0" placeholder="1"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-nomEtage">
+        Nom de l'étage
+      </label>
+      <input type="text" id="add-nomEtage" name="nomEtage" placeholder="ex : Cardiologie"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-description-etage">
+        Description
+      </label>
+      <textarea id="add-description-etage" name="description" rows="3"
+        placeholder="Décrivez les services présents à cet étage…"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition resize-none"></textarea>
+    </div>
+
+    <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+      <button type="submit"
+        class="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+        Créer l'étage
+      </button>
+      <button type="button" id="cancel-add-drawer"
+        class="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+        Annuler
+      </button>
+    </div>
+
+  </form>
+</aside>
+
+{# ── Drawer — Modifier un étage ────────────────────────────────────── #}
+<aside id="drawer-edit"
+  class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl z-50
+         transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+
+  <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
+        <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+      </div>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white">Modifier l'étage</h2>
+    </div>
+    <button type="button" id="close-edit-drawer"
+      class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <form id="form-edit-etage" method="POST" action="" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-numeroEtage">
+        Numéro d'étage <span class="text-red-500">*</span>
+      </label>
+      <input type="number" id="edit-numeroEtage" name="numeroEtage" required min="0"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-nomEtage">
+        Nom de l'étage
+      </label>
+      <input type="text" id="edit-nomEtage" name="nomEtage"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition"/>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-description-etage">
+        Description
+      </label>
+      <textarea id="edit-description-etage" name="description" rows="3"
+        class="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+               focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition resize-none"></textarea>
+    </div>
+
+    <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+      <button type="submit"
+        class="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+        Enregistrer
+      </button>
+      <button type="button" id="open-delete-modal"
+        class="px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
+        Supprimer
+      </button>
+      <button type="button" id="cancel-edit-drawer"
+        class="px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
+        Annuler
+      </button>
+    </div>
+
+  </form>
+</aside>
+
+{# ── Modal confirmation suppression ───────────────────────────────── #}
+{% include 'inc/modal_confirm_delete.html.twig' with {
+  modal_id:      'modal-delete-etage',
+  modal_title:   'Supprimer l\'étage',
+  modal_message: 'Cette action est irréversible. Les chambres associées à cet étage seront également supprimées.',
+  form_id:       'form-delete-etage',
+  form_action:   '',
+} %}
+
+{# ── Flash modals ──────────────────────────────────────────────────── #}
+{% if app.flashes('success_etage') is not empty %}
+  {% include 'inc/modal_success.html.twig' with {
+    modal_title:   'Opération réussie',
+    modal_message: app.flashes('success_etage')|first,
+    auto_open:     true,
+  } %}
+{% endif %}
+{% if app.flashes('success_etage_edit') is not empty %}
+  {% include 'inc/modal_success.html.twig' with {
+    modal_title:   'Étage modifié',
+    modal_message: app.flashes('success_etage_edit')|first,
+    auto_open:     true,
+  } %}
+{% endif %}
+
+{# ── JS drawers ────────────────────────────────────────────────────── #}
+<script nonce="{{ csp_nonce() }}">
+document.addEventListener('turbo:load', function () {
+  if (!document.getElementById('drawer-add')) return;
+
+  var overlay    = document.getElementById('drawer-overlay');
+  var drawerAdd  = document.getElementById('drawer-add');
+  var drawerEdit = document.getElementById('drawer-edit');
+  var formEdit   = document.getElementById('form-edit-etage');
+  var formDelete = document.getElementById('form-delete-etage');
+
+  function openDrawer(drawer) {
+    overlay.classList.remove('hidden');
+    requestAnimationFrame(function () {
+      drawer.classList.remove('-translate-x-full');
+    });
+  }
+
+  function closeAll() {
+    drawerAdd.classList.add('-translate-x-full');
+    drawerEdit.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+  }
+
+  ['open-add-drawer', 'open-add-drawer-empty'].forEach(function (id) {
+    var btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', function () { openDrawer(drawerAdd); });
+  });
+
+  document.getElementById('close-add-drawer').addEventListener('click', closeAll);
+  document.getElementById('cancel-add-drawer').addEventListener('click', closeAll);
+
+  document.querySelectorAll('.open-edit-drawer').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var d = btn.dataset;
+      document.getElementById('edit-numeroEtage').value       = d.numero;
+      document.getElementById('edit-nomEtage').value          = d.nom;
+      document.getElementById('edit-description-etage').value = d.description;
+      formEdit.action = '/etages/' + d.id + '/edit';
+      if (formDelete) formDelete.action = d.deleteUrl;
+      openDrawer(drawerEdit);
+    });
+  });
+
+  document.getElementById('close-edit-drawer').addEventListener('click', closeAll);
+  document.getElementById('cancel-edit-drawer').addEventListener('click', closeAll);
+
+  var openDeleteBtn = document.getElementById('open-delete-modal');
+  if (openDeleteBtn) {
+    openDeleteBtn.addEventListener('click', function () {
+      closeAll();
+      if (window.Modal) window.Modal.open('modal-delete-etage');
+    });
+  }
+
+  overlay.addEventListener('click', closeAll);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAll();
+  });
+});
+</script>
+
 {% endblock %}
