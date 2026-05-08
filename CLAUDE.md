@@ -44,6 +44,24 @@ symfony server:start
 php -S localhost:8000 -t public/
 ```
 
+### Docker
+
+```bash
+# Démarrer les services (MySQL, phpMyAdmin, Mailpit)
+docker compose up -d
+
+# Arrêter
+docker compose down
+```
+
+| Service    | URL                       |
+|------------|---------------------------|
+| phpMyAdmin | http://localhost:8080      |
+| Mailpit    | http://localhost:8025      |
+| MySQL      | localhost:3306             |
+
+> Les variables `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD` doivent être définies dans `.env.local` (non commité).
+
 ## Architecture
 
 ### Double interface : Web + API REST
