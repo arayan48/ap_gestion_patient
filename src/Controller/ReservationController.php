@@ -39,6 +39,10 @@ class ReservationController extends AbstractController
         LitRepository $litRepository,
         EmployeRepository $employeRepository
     ): Response {
+        if (!$this->isCsrfTokenValid('reservation-new', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $reservation = new Reservation();
 
         $patient = $patientRepository->find((int) $request->request->get('patient'));
@@ -74,6 +78,10 @@ class ReservationController extends AbstractController
         LitRepository $litRepository,
         EmployeRepository $employeRepository
     ): Response {
+        if (!$this->isCsrfTokenValid('reservation-edit', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $patient = $patientRepository->find((int) $request->request->get('patient'));
         $lit     = $litRepository->find((int) $request->request->get('lit'));
         $employe = $employeRepository->find((int) $request->request->get('employe'));
@@ -98,8 +106,12 @@ class ReservationController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Reservation $reservation, EntityManagerInterface $em): Response
+    public function delete(Reservation $reservation, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('reservation-delete', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $em->remove($reservation);
         $em->flush();
 

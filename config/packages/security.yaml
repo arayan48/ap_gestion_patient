@@ -45,6 +45,7 @@ security:
 
     access_control:
         - { path: ^/api/login,      roles: PUBLIC_ACCESS }
+        - { path: ^/api/register,   roles: ROLE_ADMINISTRATEUR }
         - { path: ^/api,            roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/login,          roles: PUBLIC_ACCESS }
         # Employés, étages, chambres, lits, rôles : admin seulement

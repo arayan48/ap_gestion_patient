@@ -155,6 +155,7 @@
   </div>
 
   <form method="POST" action="{{ path('app_reservation_new') }}" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('reservation-new') }}">
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-patient">
@@ -286,6 +287,7 @@
   </div>
 
   <form id="form-edit-reservation" method="POST" action="" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('reservation-edit') }}">
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-patient">
@@ -401,6 +403,7 @@
   modal_message: 'Cette action est irréversible. La réservation sera définitivement supprimée.',
   form_id:       'form-delete-reservation',
   form_action:   '',
+  csrf_token:    csrf_token('reservation-delete'),
 } %}
 
 {# ── Flash modals ──────────────────────────────────────────────────── #}

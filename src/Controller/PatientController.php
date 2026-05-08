@@ -24,6 +24,10 @@ class PatientController extends AbstractController
     #[Route('/new', name: 'new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('patient-new', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $patient = new Patient();
         $patient->setNom($request->request->get('nom', ''));
         $patient->setPrenom($request->request->get('prenom', ''));
@@ -47,6 +51,10 @@ class PatientController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['POST'])]
     public function edit(Patient $patient, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('patient-edit', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $patient->setNom($request->request->get('nom', ''));
         $patient->setPrenom($request->request->get('prenom', ''));
         $patient->setSexe($request->request->get('sexe', 'M'));
@@ -68,8 +76,12 @@ class PatientController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Patient $patient, EntityManagerInterface $em): Response
+    public function delete(Patient $patient, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('patient-delete', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $em->remove($patient);
         $em->flush();
 

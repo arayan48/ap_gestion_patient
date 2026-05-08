@@ -182,6 +182,7 @@
   </div>
 
   <form method="POST" action="{{ path('app_lit_new') }}" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('lit-new') }}">
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-numeroLit">
@@ -273,6 +274,7 @@
   </div>
 
   <form id="form-edit-lit" method="POST" action="" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('lit-edit') }}">
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-numeroLit">
@@ -350,6 +352,7 @@
   modal_message: 'Cette action est irréversible. Les réservations associées à ce lit seront également supprimées.',
   form_id:       'form-delete-lit',
   form_action:   '',
+  csrf_token:    csrf_token('lit-delete'),
 } %}
 
 {# ── Flash modals ──────────────────────────────────────────────────── #}

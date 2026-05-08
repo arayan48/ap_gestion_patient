@@ -26,6 +26,10 @@ class LitController extends AbstractController
     #[Route('/new', name: 'new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $em, ChambreRepository $chambreRepository): Response
     {
+        if (!$this->isCsrfTokenValid('lit-new', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $lit = new Lit();
         $lit->setNumeroLit($request->request->get('numeroLit', ''));
         $lit->setStatut($request->request->get('statut', 'disponible'));
@@ -51,6 +55,10 @@ class LitController extends AbstractController
         EntityManagerInterface $em,
         ChambreRepository $chambreRepository
     ): Response {
+        if (!$this->isCsrfTokenValid('lit-edit', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $lit->setNumeroLit($request->request->get('numeroLit', ''));
         $lit->setStatut($request->request->get('statut', 'disponible'));
         $lit->setDescription($request->request->get('description') ?: null);
@@ -68,8 +76,12 @@ class LitController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Lit $lit, EntityManagerInterface $em): Response
+    public function delete(Lit $lit, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('lit-delete', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $em->remove($lit);
         $em->flush();
 

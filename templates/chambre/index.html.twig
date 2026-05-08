@@ -158,6 +158,7 @@
   </div>
 
   <form method="POST" action="{{ path('app_chambre_new') }}" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('chambre-new') }}">
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-numeroChambre">
@@ -262,6 +263,7 @@
   </div>
 
   <form id="form-edit-chambre" method="POST" action="" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('chambre-edit') }}">
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-numeroChambre">
@@ -352,6 +354,7 @@
   modal_message: 'Cette action est irréversible. Les lits et réservations associés seront également supprimés.',
   form_id:       'form-delete-chambre',
   form_action:   '',
+  csrf_token:    csrf_token('chambre-delete'),
 } %}
 
 {# ── Flash modals ──────────────────────────────────────────────────── #}

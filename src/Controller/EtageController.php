@@ -24,6 +24,10 @@ class EtageController extends AbstractController
     #[Route('/new', name: 'new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('etage-new', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $etage = new Etage();
         $etage->setNumeroEtage((int) $request->request->get('numeroEtage', 0));
         $etage->setNomEtage($request->request->get('nomEtage') ?: null);
@@ -40,6 +44,10 @@ class EtageController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['POST'])]
     public function edit(Etage $etage, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('etage-edit', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $etage->setNumeroEtage((int) $request->request->get('numeroEtage', 0));
         $etage->setNomEtage($request->request->get('nomEtage') ?: null);
         $etage->setDescription($request->request->get('description') ?: null);
@@ -52,8 +60,12 @@ class EtageController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Etage $etage, EntityManagerInterface $em): Response
+    public function delete(Etage $etage, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('etage-delete', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $em->remove($etage);
         $em->flush();
 

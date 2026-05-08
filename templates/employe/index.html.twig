@@ -84,6 +84,7 @@
 
   {# Formulaire #}
   <form method="POST" action="{{ path('app_employe_new') }}" id="form-add" class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('employe-new') }}">
 
     {# Avatar #}
     <div>
@@ -285,6 +286,7 @@
 
   {# Formulaire #}
   <form method="POST" action="" id="form-edit" class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('employe-edit') }}">
 
     {# Avatar #}
     <div>
@@ -490,6 +492,7 @@
     <p id="modal-delete-name" class="text-sm font-bold text-gray-800 dark:text-white mb-5">—</p>
     <p class="text-xs text-gray-400 dark:text-gray-500 mb-6">Cette action est irréversible.</p>
     <form id="form-delete" method="POST" action="">
+      <input type="hidden" name="_token" value="{{ csrf_token('employe-delete') }}">
       <div class="flex justify-center gap-3">
         <button type="button" data-close-modal="modal-delete-employe"
           class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:bg-gray-600 transition-colors focus:outline-none">

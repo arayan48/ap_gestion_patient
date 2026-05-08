@@ -24,6 +24,10 @@ class RoleController extends AbstractController
     #[Route('/new', name: 'new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('role-new', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $role = new Role();
         $role->setNomRole($request->request->get('nomRole', ''));
         $role->setDescription($request->request->get('description') ?: null);
@@ -39,6 +43,10 @@ class RoleController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['POST'])]
     public function edit(Role $role, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('role-edit', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $role->setNomRole($request->request->get('nomRole', ''));
         $role->setDescription($request->request->get('description') ?: null);
 
@@ -50,8 +58,12 @@ class RoleController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Role $role, EntityManagerInterface $em): Response
+    public function delete(Role $role, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('role-delete', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $em->remove($role);
         $em->flush();
 

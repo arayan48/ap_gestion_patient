@@ -132,6 +132,7 @@
   </div>
 
   <form method="POST" action="{{ path('app_etage_new') }}" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('etage-new') }}">
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="add-numeroEtage">
@@ -201,6 +202,7 @@
   </div>
 
   <form id="form-edit-etage" method="POST" action="" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('etage-edit') }}">
 
     <div>
       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" for="edit-numeroEtage">
@@ -257,6 +259,7 @@
   modal_message: 'Cette action est irréversible. Les chambres associées à cet étage seront également supprimées.',
   form_id:       'form-delete-etage',
   form_action:   '',
+  csrf_token:    csrf_token('etage-delete'),
 } %}
 
 {# ── Flash modals ──────────────────────────────────────────────────── #}

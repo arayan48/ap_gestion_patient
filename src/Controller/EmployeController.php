@@ -31,6 +31,10 @@ class EmployeController extends AbstractController
         RoleRepository $roleRepository,
         UserPasswordHasherInterface $hasher
     ): Response {
+        if (!$this->isCsrfTokenValid('employe-new', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $employe = new Employe();
         $employe->setNom($request->request->get('nom', ''));
         $employe->setPrenom($request->request->get('prenom', ''));
@@ -66,6 +70,10 @@ class EmployeController extends AbstractController
         RoleRepository $roleRepository,
         UserPasswordHasherInterface $hasher
     ): Response {
+        if (!$this->isCsrfTokenValid('employe-edit', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $employe->setNom($request->request->get('nom', ''));
         $employe->setPrenom($request->request->get('prenom', ''));
         $employe->setEmail($request->request->get('email', ''));
@@ -100,8 +108,12 @@ class EmployeController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Employe $employe, EntityManagerInterface $em): Response
+    public function delete(Employe $employe, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('employe-delete', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $em->remove($employe);
         $em->flush();
 

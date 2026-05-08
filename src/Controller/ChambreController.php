@@ -26,6 +26,10 @@ class ChambreController extends AbstractController
     #[Route('/new', name: 'new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $em, EtageRepository $etageRepository): Response
     {
+        if (!$this->isCsrfTokenValid('chambre-new', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $chambre = new Chambre();
         $chambre->setNumeroChambre($request->request->get('numeroChambre', ''));
         $chambre->setTypeChambre($request->request->get('typeChambre', 'simple'));
@@ -52,6 +56,10 @@ class ChambreController extends AbstractController
         EntityManagerInterface $em,
         EtageRepository $etageRepository
     ): Response {
+        if (!$this->isCsrfTokenValid('chambre-edit', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $chambre->setNumeroChambre($request->request->get('numeroChambre', ''));
         $chambre->setTypeChambre($request->request->get('typeChambre', 'simple'));
         $chambre->setStatut($request->request->get('statut', 'disponible'));
@@ -70,8 +78,12 @@ class ChambreController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Chambre $chambre, EntityManagerInterface $em): Response
+    public function delete(Chambre $chambre, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('chambre-delete', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         $em->remove($chambre);
         $em->flush();
 

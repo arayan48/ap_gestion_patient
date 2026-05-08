@@ -146,6 +146,7 @@
   </div>
 
   <form method="POST" action="{{ path('app_patient_new') }}" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('patient-new') }}">
 
     <div class="grid grid-cols-2 gap-4">
       <div>
@@ -269,6 +270,7 @@
   </div>
 
   <form id="form-edit-patient" method="POST" action="" class="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-5">
+    <input type="hidden" name="_token" value="{{ csrf_token('patient-edit') }}">
 
     <div class="grid grid-cols-2 gap-4">
       <div>
@@ -380,6 +382,7 @@
   modal_message: 'Cette action est irréversible. Toutes les réservations associées à ce patient seront également affectées.',
   form_id:       'form-delete-patient',
   form_action:   '',
+  csrf_token:    csrf_token('patient-delete'),
 } %}
 
 {# ── Flash modals ──────────────────────────────────────────────────── #}

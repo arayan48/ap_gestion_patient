@@ -25,6 +25,10 @@ class ProfileController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        if (!$this->isCsrfTokenValid('profil-edit', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
+
         /** @var \App\Entity\Employe $user */
         $user = $this->getUser();
 
@@ -49,6 +53,10 @@ class ProfileController extends AbstractController
         UserPasswordHasherInterface $hasher
     ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        if (!$this->isCsrfTokenValid('profil-password', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide.');
+        }
 
         /** @var \App\Entity\Employe $user */
         $user = $this->getUser();
